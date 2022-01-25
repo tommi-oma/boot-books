@@ -9,11 +9,11 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.model.dto.Category;
 import fi.digitalentconsulting.books.service.BookService;
+import fi.digitalentconsulting.books.service.DatamuseService;
 
 @SpringBootApplication
 public class BootBooksApplication {
@@ -32,6 +32,13 @@ public class BootBooksApplication {
 			service.add(new BookTO("Book 4", "Author Delilah", EnumSet.of(Category.COMPUTERS), null));
 //			service.findBooks().forEach(System.out::println);
 			service.findBooks().forEach(b->LOGGER.info("Book: {}", b));
+		};
+	}
+	
+//	@Bean
+	public ApplicationRunner testDataMuse(@Autowired DatamuseService service) {
+		return args -> {
+			service.getSynonyms("Spring").forEach(System.out::println);
 		};
 	}
 }

@@ -8,3 +8,8 @@ logging:
     org:
       springframework:
         web: DEBUG
+        
+wordservice:
+  url:
+    base: https://api.datamuse.com
+    words: /words?ml=
