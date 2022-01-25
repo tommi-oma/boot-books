@@ -37,6 +37,8 @@ public class BookServiceMapImpl implements BookService {
 	@Override
 	public BookTO add(BookTO book) {
 		book.setId(nextId.getAndIncrement());
+		// Once Hibernate is in use we can use Bean validation API, for now:
+		book.validate();
 		books.put(book.getId(), book);
 		return book;
 	}

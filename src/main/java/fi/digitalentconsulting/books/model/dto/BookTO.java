@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.validation.ValidationException;
+import javax.validation.constraints.NotBlank;
+
 public class BookTO {
 	private Long id;
 	private String name;
+	@NotBlank
 	private String author;
 	private List<Category> categories = new ArrayList<>();
 	private String isbn;
@@ -71,6 +75,12 @@ public class BookTO {
 	public String toString() {
 		return "BookTO [id=" + id + ", name=" + name + ", author=" + author + ", category=" + categories + ", isbn="
 				+ isbn + "]";
+	}
+
+	public void validate() throws ValidationException {
+		if (name == null || name.isBlank()) {
+			throw new ValidationException("Null or empty name");
+		}
 	}
 	
 }

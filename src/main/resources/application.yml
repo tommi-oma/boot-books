@@ -1,0 +1,10 @@
+spring:
+  main:
+    banner-mode: off
+
+# Get some info on requests to log
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
