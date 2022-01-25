@@ -1,7 +1,9 @@
 package fi.digitalentconsulting.books;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -22,8 +24,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.service.BookService;
+import fi.digitalentconsulting.books.service.DatamuseService;
+import fi.digitalentconsulting.books.service.WordServiceException;
+import fi.digitalentconsulting.books.util.ExceptionMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -37,10 +44,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 public class BookController {
 	private static Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 	private BookService bookService;
+	private DatamuseService datamuseService;
 	
 	@Autowired
-	public BookController(BookService bookService) {
+	public BookController(BookService bookService, DatamuseService datamuseService) {
 		this.bookService = bookService;
+		this.datamuseService = datamuseService;
 	}
 	@Operation(summary = "Retrieve all books")
 	@ApiResponses(value = {
@@ -65,12 +74,6 @@ public class BookController {
 	@GetMapping("/{id}")
 	public ResponseEntity<?> findBook(@Parameter(name = "id") @PathVariable Long id) {
 		Optional<BookTO> book = bookService.findBook(id);
-		if (!book.isPresent()) {
-			LOGGER.warn("Book with id {} not found", id);
-			// as an example just return 404 NOT_FOUND
-			return ResponseEntity.notFound().build();
-		}
-		// will throw if not found, will fix later
 		return ResponseEntity.ok(book.get());
 	}
 	
@@ -119,4 +122,25 @@ public class BookController {
 		BookTO modified = bookService.modify(id, book);
 		return ResponseEntity.ok(modified);
 	}
+	
+	@Operation(summary = "Get synonyms for a book's title")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Synonyms, max 10", 
+			    content = { @Content(mediaType = "application/json", 
+			    		array = @ArraySchema(schema = @Schema(implementation = String.class))) }),
+			  @ApiResponse(responseCode = "404", description = "Book not found", 
+			    content = @Content(schema=@Schema(implementation=ExceptionMessage.class)))})
+	@GetMapping("/{id}/synonyms")
+	public ResponseEntity<List<String>> bookTitleSynonyms(@Parameter(description="Product id") @PathVariable Long id) throws NoSuchElementException {
+		Optional<BookTO> optBook = bookService.findBook(id);
+		String name = optBook.orElseThrow().getName();
+		List<String> synonyms;
+		try {
+			synonyms = datamuseService.getSynonyms(name);
+		} catch (JsonProcessingException | UnsupportedEncodingException e) {
+			throw new WordServiceException("Problem with synonyms", e);
+		}
+		return ResponseEntity.ok(synonyms);
+	}
+	
 }
