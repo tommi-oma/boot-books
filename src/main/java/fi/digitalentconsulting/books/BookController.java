@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.service.BookService;
 import fi.digitalentconsulting.books.service.DatamuseService;
@@ -116,7 +118,7 @@ public class BookController {
 	@Operation(summary = "Get synonyms for a book's title")
 	@ApiResponses(value = { 
 			  @ApiResponse(responseCode = "200", description = "Synonyms for the book title",
-			    content = { @Content(mediaType = "application/json", 
+			    content = { @Content(mediaType = "application/json",
 			    		array = @ArraySchema(schema = @Schema(implementation = String.class))) }),
 			  @ApiResponse(responseCode = "404", description = "Book not found", 
 			    content = @Content(schema=@Schema(implementation=ExceptionMessage.class)))})
