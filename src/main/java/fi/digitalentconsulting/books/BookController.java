@@ -1,12 +1,16 @@
 package fi.digitalentconsulting.books;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.service.BookService;
@@ -54,16 +59,19 @@ public class BookController {
 		  @ApiResponse(responseCode = "200", description = "A book", 
 		    content = { @Content(mediaType = "application/json", 
 		                schema = @Schema(implementation = BookTO.class)) 
-	        })
+	        }),
+		  @ApiResponse(responseCode = "404", description = "Book not found")
 	})
 	@GetMapping("/{id}")
-	public BookTO findBook(@Parameter(name = "id") @PathVariable Long id) {
+	public ResponseEntity<?> findBook(@Parameter(name = "id") @PathVariable Long id) {
 		Optional<BookTO> book = bookService.findBook(id);
 		if (!book.isPresent()) {
 			LOGGER.warn("Book with id {} not found", id);
+			// as an example just return 404 NOT_FOUND
+			return ResponseEntity.notFound().build();
 		}
 		// will throw if not found, will fix later
-		return book.get();
+		return ResponseEntity.ok(book.get());
 	}
 	
 	@Operation(summary = "Add a new book")
@@ -74,21 +82,25 @@ public class BookController {
 		        })
 		})
 	@PostMapping()
-	public BookTO createBook(@io.swagger.v3.oas.annotations.parameters.RequestBody(
+	public ResponseEntity<?> createBook(@io.swagger.v3.oas.annotations.parameters.RequestBody(
 			content = @Content(mediaType = "application/json", 
 			                   schema = @Schema(implementation= BookTO.class)))
 			@RequestBody BookTO book) {
 		BookTO created = bookService.add(book);
-		return created;
+		URI location = ServletUriComponentsBuilder
+	            .fromCurrentRequest().path("/{id}")
+	            .buildAndExpand(created.getId()).toUri();
+		return ResponseEntity.created(location).body(created);
 	}
 	
 	@Operation(summary = "Delete a book")
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteBook(@Parameter(name = "id", description = "id of the book") @PathVariable Long id) {
+	public ResponseEntity<?> deleteBook(@Parameter(name = "id", description = "id of the book") @PathVariable Long id) {
 		BookTO dummy = new BookTO();
 		dummy.setId(id);
 		bookService.delete(dummy);
+		return ResponseEntity.noContent().build();
 	}
 	
 	@Operation(summary = "Update a book", description = "Updates a book that is found with the id parameter. The book in the body has its id ignored. "+
@@ -100,8 +112,11 @@ public class BookController {
 		        })
 		})
 	@PutMapping("/{id}")
-	public BookTO modifyBook(@Parameter(name = "id", description = "id of the book") @PathVariable Long id,
-			@RequestBody BookTO book) {
-		return bookService.modify(id, book);
+	public ResponseEntity<BookTO> modifyBook(@Parameter(name = "id", description = "id of the book") @PathVariable Long id,
+			@Valid @RequestBody BookTO book) {  // @Valid does not validate until we start using Hibernate
+		// BookService::modify will throw NoSuchElementException if book not found.
+		// ControllerAdvice will handle the exception with 404 NOT_FOUND
+		BookTO modified = bookService.modify(id, book);
+		return ResponseEntity.ok(modified);
 	}
 }
