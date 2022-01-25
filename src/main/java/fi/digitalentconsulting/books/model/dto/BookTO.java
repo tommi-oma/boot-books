@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.NotBlank;
 
 public class BookTO {
@@ -76,5 +75,4 @@ public class BookTO {
 		return "BookTO [id=" + id + ", name=" + name + ", author=" + author + ", category=" + categories + ", isbn="
 				+ isbn + "]";
 	}
-
 }
