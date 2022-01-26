@@ -6,6 +6,7 @@ import java.util.HashSet;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 
 import fi.digitalentconsulting.books.model.dto.Category;
@@ -22,6 +23,10 @@ public class Book {
 	private Double price;
 	private HashSet<Category> categories = new HashSet<>();
 	private String isbn;
+	
+	@ManyToOne()
+	private Publisher publisher;
+	
 	public Long getId() {
 		return id;
 	}
@@ -58,5 +63,11 @@ public class Book {
 	}
 	public void setIsbn(String isbn) {
 		this.isbn = isbn;
+	}
+	public Publisher getPublisher() {
+		return publisher;
+	}
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
 	}
 }

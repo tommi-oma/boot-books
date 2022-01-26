@@ -1,11 +1,13 @@
 package fi.digitalentconsulting.books.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
@@ -26,8 +28,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.digitalentconsulting.books.entity.Publisher;
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.model.dto.Category;
+import fi.digitalentconsulting.books.repository.PublisherRepository;
 import fi.digitalentconsulting.books.service.BookService;
 import fi.digitalentconsulting.books.service.DatamuseService;
 
@@ -37,6 +41,8 @@ import fi.digitalentconsulting.books.service.DatamuseService;
 public class BookControllerTest {
 	@Autowired
 	private BookService bookService;
+	@Autowired
+	private PublisherRepository publisherRepository;
 	@Autowired
 	private MockMvc mockMvc;
     private ObjectMapper mapper = new ObjectMapper();
@@ -56,6 +62,11 @@ public class BookControllerTest {
 		// If not autoconfiguring and injecting mockMvc we can use:
 		//	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
         bookService.addAll(initialBooks);
+		Publisher p = new Publisher();
+		p.setName("Publisher 1");
+		p.setWebpage(new URL("http://www.pub1.com"));
+		publisherRepository.save(p);
+        
         Mockito.doReturn(mockedSynonyms)
         		.when(datamuseService).getSynonyms(anyString());
 	}
@@ -98,7 +109,9 @@ public class BookControllerTest {
 	
 	@Test
 	public void creatingProperBookSucceeds() throws Exception {
-		long expectedId = 30; // initialBooks.size();
+		long expectedId = bookService.findBooks().stream()
+				.mapToLong(BookTO::getId)
+				.max().getAsLong() + 2;
 		BookTO book = new BookTO("Test Title", "Test Author", EnumSet.of(Category.POETRY, Category.COMPUTERS), null);
 		MvcResult res = mockMvc.perform(post(BASE_URL)
 				.content(mapper.writeValueAsBytes(book))
@@ -138,5 +151,23 @@ public class BookControllerTest {
 		returned.forEach(syn -> {
 			assertThat(syn).isIn(mockedSynonyms);
 		});
+	}
+	
+	@Test
+	public void publisherIsAddedWhenCreatingTheBook() throws Exception {
+		Publisher p = publisherRepository.findAll().iterator().next();
+		BookTO book = new BookTO("Test Title", "Test Author", EnumSet.of(Category.POETRY, Category.COMPUTERS), null, p);
+		MvcResult res = mockMvc.perform(post(BASE_URL)
+				.content(mapper.writeValueAsBytes(book))
+				.contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+        BookTO returned = mapper.readValue(res.getResponse().getContentAsString(),
+                BookTO.class);
+		BookTO saved = bookService.findBook(returned.getId()).orElse(null);
+		assertNotNull(saved);
+		assertNotNull(saved.getPublisher());
+		assertThat(p.getId()).isEqualTo(saved.getPublisher().getId());
 	}
 }
