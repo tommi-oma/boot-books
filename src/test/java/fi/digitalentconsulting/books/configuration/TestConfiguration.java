@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
+import fi.digitalentconsulting.books.repository.BookRepository;
+import fi.digitalentconsulting.books.service.BookService;
+import fi.digitalentconsulting.books.service.BookServiceJPAImpl;
 import fi.digitalentconsulting.books.service.DatamuseService;
 
 @Profile("test")
@@ -16,5 +19,10 @@ public class TestConfiguration {
     @Bean @Primary
     public DatamuseService dataMuseService() {
         return Mockito.mock(DatamuseService.class);
-    }    
+    }
+    
+    @Bean
+    public BookService bookService(BookRepository repo) {
+    	return new BookServiceJPAImpl(repo);
+    }
 }

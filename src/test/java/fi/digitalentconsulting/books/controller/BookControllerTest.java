@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
+import fi.digitalentconsulting.books.service.BookServiceMapImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,13 +28,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.model.dto.Category;
 import fi.digitalentconsulting.books.service.BookService;
-import fi.digitalentconsulting.books.service.BookServiceMapImpl;
 import fi.digitalentconsulting.books.service.DatamuseService;
 import fi.digitalentconsulting.books.service.TestDatamuseService;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-@ExtendWith(MockitoExtension.class)
 public class BookControllerTest {
 	@Autowired
 	private BookService bookService;
@@ -102,7 +101,7 @@ public class BookControllerTest {
 	
 	@Test
 	public void creatingProperBookSucceeds() throws Exception {
-		long expectedId = ((BookServiceMapImpl)bookService).nextId();// should equal: initialBooks.size()+1;
+		long expectedId = bookService.findBooks().stream().mapToLong(BookTO::getId).max().orElseThrow() + 1;
 		BookTO book = new BookTO("Test Title", "Test Author", EnumSet.of(Category.POETRY, Category.COMPUTERS), null);
 		MvcResult res = mockMvc.perform(post(BASE_URL)
 				.content(mapper.writeValueAsBytes(book))

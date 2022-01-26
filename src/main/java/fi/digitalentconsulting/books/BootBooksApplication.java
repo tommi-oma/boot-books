@@ -1,5 +1,7 @@
 package fi.digitalentconsulting.books;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.EnumSet;
 
 import org.slf4j.Logger;
@@ -40,7 +42,18 @@ public class BootBooksApplication {
 //	@Bean
 	public ApplicationRunner testDataMuse(@Autowired DatamuseService service) {
 		return args -> {
-			service.getSynonyms("Spring").forEach(System.out::println);
+			Arrays.asList("Spring", "Boot", "Spring Boot", "Book", "Compilers")
+				.stream()
+				.forEach(w-> {
+					System.out.println("-- Word: " + w);
+					try {
+						service.getSynonyms(w).forEach(System.out::println);
+					} catch (UnsupportedEncodingException e) {
+						System.out.println("Encoding exception for: "+w);
+					}
+					System.out.println();
+				});
+			;
 		};
 	}
 }
