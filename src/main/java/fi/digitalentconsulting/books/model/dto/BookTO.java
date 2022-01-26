@@ -104,4 +104,5 @@ public class BookTO {
 		toModify.setCategories(this.categories);
 		toModify.setIsbn(this.isbn);
 	}
+
 }

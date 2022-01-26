@@ -7,5 +7,4 @@ import fi.digitalentconsulting.books.entity.Book;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
-
 }
