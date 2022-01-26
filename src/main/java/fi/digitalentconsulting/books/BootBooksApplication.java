@@ -9,6 +9,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.model.dto.Category;
@@ -23,6 +24,7 @@ public class BootBooksApplication {
 		SpringApplication.run(BootBooksApplication.class, args);
 	}
 
+	@Profile("!test")
 	@Bean
 	public ApplicationRunner initBooks(@Autowired BookService service) {
 		return args -> {

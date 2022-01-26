@@ -1,6 +1,7 @@
 package fi.digitalentconsulting.books.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,5 +62,13 @@ public class BookServiceMapImpl implements BookService {
 		book.setName(newValues.getName());
 		return book;
 	}
+
+	@Override
+	public void addAll(Collection<BookTO> books) {
+		books.forEach(this::add);
+	}
 	
+	public long nextId() {
+		return nextId.get();
+	}
 }

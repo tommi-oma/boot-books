@@ -1,5 +1,6 @@
 package fi.digitalentconsulting.books.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -43,4 +44,6 @@ public interface BookService {
 	 */
 	public BookTO modify(Long id, BookTO newValues) 
 			throws NoSuchElementException;
+	
+	public void addAll(Collection<BookTO> books);
 }
