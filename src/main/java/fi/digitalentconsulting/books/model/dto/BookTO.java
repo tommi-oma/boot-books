@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotBlank;
 import fi.digitalentconsulting.books.entity.Book;
 import fi.digitalentconsulting.books.entity.Publisher;
 
+import fi.digitalentconsulting.books.entity.Book;
+
 public class BookTO {
 	private Long id;
 	@NotBlank
@@ -126,4 +128,5 @@ public class BookTO {
 		toModify.setCategories(this.categories);
 		toModify.setIsbn(this.isbn);
 	}
+
 }
