@@ -6,8 +6,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +35,8 @@ public class DatamuseService {
                 .bodyToFlux(MuseWord.class)
                 .collectList()
                 .block(Duration.ofSeconds(20));
-
-		return words.stream().map(MuseWord::getWord).limit(10).collect(Collectors.toList());
+		if (words == null) return Collections.emptyList();
+		return words.stream().map(MuseWord::getWord).limit(10).toList();
 	}
 }
 
