@@ -7,6 +7,7 @@ import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 
 import fi.digitalentconsulting.books.entity.Book;
+import fi.digitalentconsulting.books.entity.Publisher;
 
 public class BookTO {
 	private Long id;
@@ -16,6 +17,7 @@ public class BookTO {
 	private String author;
 	private List<Category> categories = new ArrayList<>();
 	private String isbn;
+	private Publisher publisher;
 	
 	public BookTO() {
 	}
@@ -28,6 +30,15 @@ public class BookTO {
 		this.isbn = isbn;
 	}
 	
+	public BookTO(String name, String author, Collection<Category> categories, String isbn, Publisher publisher) {
+		this.name = name;
+		this.author = author;
+		if (categories != null && !categories.isEmpty())
+			this.categories.addAll(categories);
+		this.isbn = isbn;
+		this.publisher = publisher;
+	}
+	
 	public BookTO(Book book) {
 		id = book.getId();
 		name = book.getTitle();
@@ -35,6 +46,7 @@ public class BookTO {
 		categories.clear();
 		categories.addAll(book.getCategories());
 		isbn = book.getIsbn();
+		publisher = book.getPublisher();
 	}
 
 	public Long getId() {
@@ -82,10 +94,19 @@ public class BookTO {
 		this.isbn = isbn;
 	}
 
+	public Publisher getPublisher() {
+		return publisher;
+	}
+
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
+
+
 	@Override
 	public String toString() {
-		return "BookTO [id=" + id + ", name=" + name + ", author=" + author + ", category=" + categories + ", isbn="
-				+ isbn + "]";
+		return "BookTO [id=" + id + ", name=" + name + ", author=" + author + ", categories=" + categories + ", isbn="
+				+ isbn + ", publisher=" + publisher + "]";
 	}
 
 	public Book convertToBook() {
@@ -95,6 +116,7 @@ public class BookTO {
 		book.setAuthor(author);
 		book.setCategories(categories);
 		book.setIsbn(isbn);
+		book.setPublisher(publisher);
 		return book;
 	}
 

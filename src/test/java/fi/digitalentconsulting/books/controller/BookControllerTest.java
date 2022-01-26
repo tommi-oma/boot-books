@@ -1,15 +1,19 @@
 package fi.digitalentconsulting.books.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,8 +25,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.digitalentconsulting.books.entity.Publisher;
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.model.dto.Category;
+import fi.digitalentconsulting.books.repository.PublisherRepository;
 import fi.digitalentconsulting.books.service.BookService;
 import fi.digitalentconsulting.books.service.DatamuseService;
 
@@ -31,6 +37,8 @@ import fi.digitalentconsulting.books.service.DatamuseService;
 public class BookControllerTest {
 	@Autowired
 	private BookService bookService;
+	@Autowired
+	private PublisherRepository publisherRepository;
 	@Autowired
 	private MockMvc mockMvc;
     private ObjectMapper mapper = new ObjectMapper();
@@ -45,17 +53,20 @@ public class BookControllerTest {
     @Autowired
     DatamuseService datamuseService;
 
-	// If using the mock-version of datamuse service we would use this:
-	//private static final List<String> mockedSynonyms = Arrays.asList("ONE", "TWO");
+	private static final List<String> mockedSynonyms = Arrays.asList("ONE", "TWO");
 
 	@BeforeEach
 	public void setup() throws Exception {
 		// If not autoconfiguring and injecting mockMvc we can use:
 		//	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
         bookService.addAll(initialBooks);
-		// if we were to use a mock as dataMuseService
-//        Mockito.doReturn(mockedSynonyms)
-//        		.when(datamuseService).getSynonyms(anyString());
+		Publisher p = new Publisher();
+		p.setName("Publisher 1");
+		p.setWebpage(new URL("http://www.pub1.com"));
+		publisherRepository.save(p);
+        
+        Mockito.doReturn(mockedSynonyms)
+        		.when(datamuseService).getSynonyms(anyString());
 	}
 	
 	@Test
@@ -97,8 +108,8 @@ public class BookControllerTest {
 	@Test
 	public void creatingProperBookSucceeds() throws Exception {
 		// New Book::id changes depending on how many books are created before running this method
-		// we should be able to expect new id to be one greater than the current max id value
-		long expectedId = bookService.findBooks().stream().mapToLong(BookTO::getId).max().getAsLong()+1;
+		// we should be able to expect new id to be 2 greater than the current max id value
+		long expectedId = bookService.findBooks().stream().mapToLong(BookTO::getId).max().getAsLong()+2;
 		BookTO book = new BookTO("Test Title", "Test Author", EnumSet.of(Category.POETRY, Category.COMPUTERS), null);
 		MvcResult res = mockMvc.perform(post(BASE_URL)
 				.content(mapper.writeValueAsBytes(book))
@@ -164,5 +175,23 @@ public class BookControllerTest {
 		returned.forEach(syn -> {
 			assertThat(syn).isIn(mockedSynonyms);
 		});
+	}
+	
+	@Test
+	public void publisherIsAddedWhenCreatingTheBook() throws Exception {
+		Publisher p = publisherRepository.findAll().iterator().next();
+		BookTO book = new BookTO("Test Title", "Test Author", EnumSet.of(Category.POETRY, Category.COMPUTERS), null, p);
+		MvcResult res = mockMvc.perform(post(BASE_URL)
+				.content(mapper.writeValueAsBytes(book))
+				.contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+        BookTO returned = mapper.readValue(res.getResponse().getContentAsString(),
+                BookTO.class);
+		BookTO saved = bookService.findBook(returned.getId()).orElse(null);
+		assertNotNull(saved);
+		assertNotNull(saved.getPublisher());
+		assertThat(p.getId()).isEqualTo(saved.getPublisher().getId());
 	}
 }

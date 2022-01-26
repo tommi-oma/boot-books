@@ -13,8 +13,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
+import fi.digitalentconsulting.books.entity.Publisher;
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.model.dto.Category;
+import fi.digitalentconsulting.books.repository.PublisherRepository;
 import fi.digitalentconsulting.books.service.BookService;
 import fi.digitalentconsulting.books.service.DatamuseService;
 
@@ -28,9 +30,12 @@ public class BootBooksApplication {
 
 	@Profile("!test")
 	@Bean
-	public ApplicationRunner initBooks(@Autowired BookService service) {
+	public ApplicationRunner initBooks(@Autowired BookService service, PublisherRepository prep) {
 		return args -> {
-			service.add(new BookTO("Book 1", "Author Arthur", EnumSet.of(Category.BIOGRAPHY), null));
+			Publisher p = new Publisher();
+			p.setName("Publisher 1");
+			prep.save(p);
+			service.add(new BookTO("Book 1", "Author Arthur", EnumSet.of(Category.BIOGRAPHY), null, p));
 			service.add(new BookTO("Book 2", "Author Beate", EnumSet.of(Category.POETRY, Category.COMPUTERS), "0-201-10088-6"));
 			service.add(new BookTO("Book 3", "Author Clark", EnumSet.of(Category.BIOGRAPHY), null));
 			service.add(new BookTO("Book 4", "Author Delilah", EnumSet.of(Category.COMPUTERS), null));
