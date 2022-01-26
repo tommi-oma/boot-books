@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import fi.digitalentconsulting.books.model.dto.BookTO;
 
-@Service
 public class BookServiceMapImpl implements BookService {
 	private static Logger LOGGER = LoggerFactory.getLogger(BookServiceMapImpl.class);
 	private Map<Long, BookTO> books = new HashMap<>();

@@ -6,6 +6,8 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotBlank;
 
+import fi.digitalentconsulting.books.entity.Book;
+
 public class BookTO {
 	private Long id;
 	@NotBlank
@@ -24,6 +26,15 @@ public class BookTO {
 		if (categories != null && !categories.isEmpty())
 			this.categories.addAll(categories);
 		this.isbn = isbn;
+	}
+	
+	public BookTO(Book book) {
+		id = book.getId();
+		name = book.getTitle();
+		author = book.getAuthor();
+		categories.clear();
+		categories.addAll(book.getCategories());
+		isbn = book.getIsbn();
 	}
 
 	public Long getId() {
@@ -77,4 +88,13 @@ public class BookTO {
 				+ isbn + "]";
 	}
 
+	public Book convertToBook() {
+		Book book = new Book();
+		book.setId(id);
+		book.setTitle(name);
+		book.setAuthor(author);
+		book.setCategories(categories);
+		book.setIsbn(isbn);
+		return book;
+	}
 }
