@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.service.BookService;
 import fi.digitalentconsulting.books.service.DatamuseService;
@@ -137,7 +135,7 @@ public class BookController {
 		List<String> synonyms;
 		try {
 			synonyms = datamuseService.getSynonyms(name);
-		} catch (JsonProcessingException | UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException e) {
 			throw new WordServiceException("Problem with synonyms", e);
 		}
 		return ResponseEntity.ok(synonyms);

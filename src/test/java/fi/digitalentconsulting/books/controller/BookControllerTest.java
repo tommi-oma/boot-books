@@ -29,7 +29,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.model.dto.Category;
 import fi.digitalentconsulting.books.service.BookService;
-import fi.digitalentconsulting.books.service.BookServiceMapImpl;
 import fi.digitalentconsulting.books.service.DatamuseService;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -99,7 +98,7 @@ public class BookControllerTest {
 	
 	@Test
 	public void creatingProperBookSucceeds() throws Exception {
-		long expectedId = ((BookServiceMapImpl)bookService).nextId();// initialBooks.size()+1;
+		long expectedId = 30; // initialBooks.size();
 		BookTO book = new BookTO("Test Title", "Test Author", EnumSet.of(Category.POETRY, Category.COMPUTERS), null);
 		MvcResult res = mockMvc.perform(post(BASE_URL)
 				.content(mapper.writeValueAsBytes(book))

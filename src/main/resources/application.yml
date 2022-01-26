@@ -17,14 +17,15 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
 # Access H2 console at http://localhost:8080/h2-console
 #  h2:
-#    console.enabled: true
+#    console:
+#        enabled: true
 
 # Get some info on requests to log
 logging:
   level:
     org:
       springframework:
-        web: DEBUG
+        web: INFO
         
 wordservice:
   url:
