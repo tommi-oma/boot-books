@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import fi.digitalentconsulting.books.model.dto.Category;
 
@@ -14,6 +15,7 @@ import fi.digitalentconsulting.books.model.dto.Category;
 public class Book {
 	@Id @GeneratedValue
 	private Long id;
+	@NotNull
 	@NotBlank(message = "Title can't be blank")
 	private String title;
 	@NotBlank(message = "Author can't be blank")
