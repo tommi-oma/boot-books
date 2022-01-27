@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -176,7 +177,7 @@ public class BookControllerTest {
 		});
 	}
 	
-	@Test
+	@Test @Transactional
 	public void publisherIsAddedWhenCreatingTheBook() throws Exception {
 		Publisher p = publisherRepository.findAll().iterator().next();
 		BookTO book = new BookTO("Test Title", "Test Author", EnumSet.of(Category.POETRY, Category.COMPUTERS), null, p);

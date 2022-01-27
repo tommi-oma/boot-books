@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,7 +70,7 @@ public class BookController {
 	        }),
 		  @ApiResponse(responseCode = "404", description = "Book not found")
 	})
-	@GetMapping("/{id}")
+	@GetMapping("/{id}") @Transactional
 	public ResponseEntity<?> findBook(@Parameter(name = "id") @PathVariable Long id) {
 		Optional<BookTO> book = bookService.findBook(id);
 		return ResponseEntity.ok(book.get());
