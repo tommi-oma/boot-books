@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 import fi.digitalentconsulting.books.service.DatamuseService;
 
 @Profile("test")
-@Configuration
+//@Configuration
 public class TestConfiguration {
     @Bean @Primary
     public DatamuseService dataMuseService() {

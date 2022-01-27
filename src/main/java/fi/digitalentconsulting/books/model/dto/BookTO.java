@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 public class BookTO {
 	private Long id;
+	@NotBlank
 	private String name;
 	@NotBlank
 	private String author;
@@ -77,10 +78,10 @@ public class BookTO {
 				+ isbn + "]";
 	}
 
-	public void validate() throws ValidationException {
-		if (name == null || name.isBlank()) {
-			throw new ValidationException("Null or empty name");
-		}
-	}
+//	public void validate() throws ValidationException {
+//		if (name == null || name.isBlank()) {
+//			throw new ValidationException("Null or empty name");
+//		}
+//	}
 	
 }

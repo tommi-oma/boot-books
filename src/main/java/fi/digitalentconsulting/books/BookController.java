@@ -88,7 +88,7 @@ public class BookController {
 	public ResponseEntity<?> createBook(@io.swagger.v3.oas.annotations.parameters.RequestBody(
 			content = @Content(mediaType = "application/json", 
 			                   schema = @Schema(implementation= BookTO.class)))
-			@RequestBody BookTO book) {
+			@Valid @RequestBody BookTO book) {
 		BookTO created = bookService.add(book);
 		URI location = ServletUriComponentsBuilder
 	            .fromCurrentRequest().path("/{id}")
@@ -137,7 +137,7 @@ public class BookController {
 		List<String> synonyms;
 		try {
 			synonyms = datamuseService.getSynonyms(name);
-		} catch (JsonProcessingException | UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException e) {
 			throw new WordServiceException("Problem with synonyms", e);
 		}
 		return ResponseEntity.ok(synonyms);

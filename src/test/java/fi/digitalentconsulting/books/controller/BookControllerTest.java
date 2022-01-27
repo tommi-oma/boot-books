@@ -31,6 +31,7 @@ import fi.digitalentconsulting.books.model.dto.Category;
 import fi.digitalentconsulting.books.service.BookService;
 import fi.digitalentconsulting.books.service.BookServiceMapImpl;
 import fi.digitalentconsulting.books.service.DatamuseService;
+import fi.digitalentconsulting.books.service.TestDatamuseService;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -51,14 +52,14 @@ public class BookControllerTest {
     
     @Autowired
     DatamuseService datamuseService;
-	private static final List<String> mockedSynonyms = Arrays.asList("ONE", "TWO");         
+	//private static final List<String> mockedSynonyms = Arrays.asList("ONE", "TWO");         
 	@BeforeEach
 	public void setup() throws Exception {
 		// If not autoconfiguring and injecting mockMvc we can use:
 		//	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
         bookService.addAll(initialBooks);
-        Mockito.doReturn(mockedSynonyms)
-        		.when(datamuseService).getSynonyms(anyString());
+//        Mockito.doReturn(mockedSynonyms)
+//        		.when(datamuseService).getSynonyms(anyString());
 	}
 	
 	@Test
@@ -129,13 +130,15 @@ public class BookControllerTest {
 	
 	@Test
 	public void synonymsAreReturned() throws Exception {
+		List<String> mockedSynonyms = ((TestDatamuseService)datamuseService).getSynonyms(null);
 		MvcResult res = mockMvc.perform(get(BASE_URL+"/1/synonyms")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
         List<String> returned = mapper.readValue(res.getResponse().getContentAsString(),
         		new TypeReference<List<String>>() {});
-		assertThat(returned.size()).isEqualTo(mockedSynonyms.size());
+		//assertThat(returned.size()).isEqualTo(mockedSynonyms.size());
+        assertThat(returned.size()).isEqualTo(mockedSynonyms.size());
 		returned.forEach(syn -> {
 			assertThat(syn).isIn(mockedSynonyms);
 		});

@@ -33,14 +33,14 @@ public class BookControllerAdvice {
         		.body(new ExceptionMessage("Not found", ex.getMessage()));
     }
     
-    @ExceptionHandler(value =  ValidationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    protected ResponseEntity<ExceptionMessage> handleValidationFailure(
-      ValidationException ex, WebRequest request) {
-    	LOGGER.info("Exception '{}' returns BAD_REQUEST", ex.toString());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-        		.body(new ExceptionMessage("Validation failed", ex.getMessage()));
-    }
+//    @ExceptionHandler(value =  ValidationException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    protected ResponseEntity<ExceptionMessage> handleValidationFailure(
+//      ValidationException ex, WebRequest request) {
+//    	LOGGER.info("Exception '{}' returns BAD_REQUEST", ex.toString());
+//        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//        		.body(new ExceptionMessage("Validation failed", ex.getMessage()));
+//    }
     
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
