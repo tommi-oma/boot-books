@@ -3,9 +3,17 @@ package fi.digitalentconsulting.books.entity;
 import java.util.Collection;
 import java.util.HashSet;
 
+<<<<<<< HEAD
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+=======
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+>>>>>>> 627df96 (jpa tests added)
 
 import fi.digitalentconsulting.books.model.dto.Category;
 
