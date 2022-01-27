@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import fi.digitalentconsulting.books.model.dto.Category;
 
@@ -16,6 +17,7 @@ import fi.digitalentconsulting.books.model.dto.Category;
 public class Book {
 	@Id @GeneratedValue
 	private Long id;
+	@NotNull
 	@NotBlank(message = "Title can't be blank")
 	private String title;
 	@NotBlank(message = "Author can't be blank")
