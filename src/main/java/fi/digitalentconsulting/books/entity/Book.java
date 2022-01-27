@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Version;
 import javax.validation.constraints.NotBlank;
 
 import fi.digitalentconsulting.books.model.dto.Category;
@@ -26,6 +27,9 @@ public class Book {
 	
 	@ManyToOne()
 	private Publisher publisher;
+	
+	@Version
+	private Long version; 
 	
 	public Long getId() {
 		return id;
