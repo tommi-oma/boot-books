@@ -137,7 +137,7 @@ public class BookController {
 		List<String> synonyms;
 		try {
 			synonyms = datamuseService.getSynonyms(name);
-		} catch (JsonProcessingException | UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException e) {
 			throw new WordServiceException("Problem with synonyms", e);
 		}
 		return ResponseEntity.ok(synonyms);
