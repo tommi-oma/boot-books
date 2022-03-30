@@ -8,11 +8,11 @@ setup implemented.
 
 The labs
 	
-1. CRUD Books
-1. Error handling / Books
-1. REST client for Datamuse / Books
-1. Testing the REST
-1. Book repository (JPA)
-1. Book store (relationships)
-1. Transactions
+1. CRUD Books [branch crud-controller](https://github.com/tommi-oma/boot-books/tree/crud-controller)
+1. Error handling / Books [branch error-handling](https://github.com/tommi-oma/boot-books/tree/error-handling)
+1. REST client for Datamuse / Books [branch crud-controller](https://github.com/tommi-oma/boot-books/tree/crud-controller)
+1. Testing the REST [branch book-tests](https://github.com/tommi-oma/boot-books/tree/book-tests)
+1. Book repository (JPA) [branch jpa-repository](https://github.com/tommi-oma/boot-books/tree/jpa-repository)
+1. Book store (relationships) [branch jpa-relationship](https://github.com/tommi-oma/boot-books/tree/jpa-relationship)
+1. Transactions [branch transctions](https://github.com/tommi-oma/boot-books/tree/transctions)
 
