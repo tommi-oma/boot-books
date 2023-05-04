@@ -52,8 +52,10 @@ public class BookServiceJPAImpl implements BookService {
 
 	@Override
 	public BookTO modify(Long id, BookTO newValues) throws NoSuchElementException {
-		// TODO Auto-generated method stub
-		return null;
+		Book toModify = bookRepository.findById(id).get();
+		newValues.copyTo(toModify);
+		bookRepository.save(toModify);
+		return new BookTO(toModify);
 	}
 
 	@Override

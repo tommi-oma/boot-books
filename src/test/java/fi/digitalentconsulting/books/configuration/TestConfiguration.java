@@ -1,6 +1,7 @@
 package fi.digitalentconsulting.books.configuration;
 
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -22,7 +23,7 @@ public class TestConfiguration {
     }
     
     @Bean
-    public BookService bookService(BookRepository repo) {
+    public BookService bookService(@Autowired BookRepository repo) {
     	return new BookServiceJPAImpl(repo);
     }
 }

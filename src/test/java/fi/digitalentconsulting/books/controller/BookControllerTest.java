@@ -1,19 +1,15 @@
 package fi.digitalentconsulting.books.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
-import fi.digitalentconsulting.books.service.BookServiceMapImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -101,7 +97,9 @@ public class BookControllerTest {
 	
 	@Test
 	public void creatingProperBookSucceeds() throws Exception {
-		long expectedId = bookService.findBooks().stream().mapToLong(BookTO::getId).max().orElseThrow() + 1;
+		// New Book::id changes depending on how many books are created before running this method
+		// we should be able to expect new id to be one greater than the current max id value
+		long expectedId = bookService.findBooks().stream().mapToLong(BookTO::getId).max().getAsLong()+1;
 		BookTO book = new BookTO("Test Title", "Test Author", EnumSet.of(Category.POETRY, Category.COMPUTERS), null);
 		MvcResult res = mockMvc.perform(post(BASE_URL)
 				.content(mapper.writeValueAsBytes(book))
@@ -128,7 +126,32 @@ public class BookControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
 	}
-	
+
+	@Test
+	public void canModifyABook() throws Exception {
+		BookTO book = bookService.findBooks().get(0);
+		String name = book.getName() + " TEST";
+		book.setName(name);
+		mockMvc.perform(put(BASE_URL+"/"+book.getId())
+						.content(mapper.writeValueAsBytes(book))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk());
+		String newName = bookService.findBook(book.getId()).get().getName();
+		assertThat(name).isEqualTo(newName);
+	}
+
+	@Test
+	public void canNotModifyABookWithEmptyName() throws Exception {
+		BookTO book = bookService.findBooks().get(0);
+		book.setName("");
+		mockMvc.perform(put(BASE_URL+"/"+book.getId())
+						.content(mapper.writeValueAsBytes(book))
+						.contentType(MediaType.APPLICATION_JSON)
+						.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
+	}
+
 	@Test
 	public void synonymsAreReturned() throws Exception {
 		List<String> mockedSynonyms = ((TestDatamuseService)datamuseService).getSynonyms(null);

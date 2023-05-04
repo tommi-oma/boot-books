@@ -97,4 +97,11 @@ public class BookTO {
 		book.setIsbn(isbn);
 		return book;
 	}
+
+	public void copyTo(Book toModify) {
+		toModify.setTitle(this.name);
+		toModify.setAuthor(this.author);
+		toModify.setCategories(this.categories);
+		toModify.setIsbn(this.isbn);
+	}
 }
