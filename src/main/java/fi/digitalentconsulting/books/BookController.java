@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +116,7 @@ public class BookController {
 		})
 	@PutMapping("/{id}")
 	public ResponseEntity<BookTO> modifyBook(@Parameter(name = "id", description = "id of the book") @PathVariable Long id,
-			@Valid @RequestBody BookTO book) {  // @Valid does not validate until we start using Hibernate
+			@Valid @RequestBody BookTO book) {  // @Valid does not validate, unless we have validation dependency
 		// BookService::modify will throw NoSuchElementException if book not found.
 		// ControllerAdvice will handle the exception with 404 NOT_FOUND
 		BookTO modified = bookService.modify(id, book);
