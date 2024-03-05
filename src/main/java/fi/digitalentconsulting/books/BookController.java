@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.service.BookService;
@@ -116,7 +114,7 @@ public class BookController {
 		})
 	@PutMapping("/{id}")
 	public ResponseEntity<BookTO> modifyBook(@Parameter(name = "id", description = "id of the book") @PathVariable Long id,
-			@Valid @RequestBody BookTO book) {  // @Valid does not validate until we start using Hibernate
+			@Valid @RequestBody BookTO book) {  // @Valid does not validate, unless we have validation dependency
 		// BookService::modify will throw NoSuchElementException if book not found.
 		// ControllerAdvice will handle the exception with 404 NOT_FOUND
 		BookTO modified = bookService.modify(id, book);
