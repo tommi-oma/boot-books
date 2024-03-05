@@ -3,8 +3,6 @@ package fi.digitalentconsulting.books;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import javax.validation.ValidationException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -33,7 +31,7 @@ public class BookControllerAdvice {
         		.body(new ExceptionMessage("Not found", ex.getMessage()));
     }
     
-    @ExceptionHandler(value = {ValidationException.class, MethodArgumentNotValidException.class})
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<ExceptionMessage> handleValidationException(
     		MethodArgumentNotValidException ex, WebRequest request) {
