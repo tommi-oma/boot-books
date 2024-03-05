@@ -27,15 +27,19 @@ public class DatamuseService {
 	}
 	
 	public List<String> getSynonyms(String word) throws UnsupportedEncodingException {
+		return getSynonyms(word, 10);
+	}
+
+	public List<String> getSynonyms(String word, int limit) throws UnsupportedEncodingException {
 		final String encodedWord = URLEncoder.encode(word, StandardCharsets.UTF_8.toString());
 		LOGGER.info("Encoded word: '{}'", encodedWord);
 		List<MuseWord> words = webClient.get()
-                .uri(baseUrl + wordPart + encodedWord)
-                .retrieve()
-                .bodyToFlux(MuseWord.class)
-                .collectList()
-                .block();
-		return words.stream().map(MuseWord::getWord).limit(10).collect(Collectors.toList());
+				.uri(baseUrl + wordPart + encodedWord)
+				.retrieve()
+				.bodyToFlux(MuseWord.class)
+				.collectList()
+				.block();
+		return words.stream().map(MuseWord::getWord).limit(limit).collect(Collectors.toList());
 	}
 }
 

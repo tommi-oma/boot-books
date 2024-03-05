@@ -42,6 +42,14 @@ public class BookControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
         		.body(new ExceptionMessage("Bad request", errmessage));
     }
-    
+
+    @ExceptionHandler(value = { IllegalArgumentException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<ExceptionMessage> handleIllegalArgument(
+            RuntimeException ex, WebRequest request) {
+        LOGGER.info("Exception '{}' returns BAD_REQUEST", ex.toString());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ExceptionMessage("Illegal argument", ex.getMessage()));
+    }
 
 }

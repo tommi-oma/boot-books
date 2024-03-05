@@ -13,15 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -125,18 +117,19 @@ public class BookController {
 	
 	@Operation(summary = "Get synonyms for a book's title")
 	@ApiResponses(value = { 
-			  @ApiResponse(responseCode = "200", description = "Synonyms, max 10", 
+			  @ApiResponse(responseCode = "200", description = "Synonyms for the book title",
 			    content = { @Content(mediaType = "application/json", 
 			    		array = @ArraySchema(schema = @Schema(implementation = String.class))) }),
 			  @ApiResponse(responseCode = "404", description = "Book not found", 
 			    content = @Content(schema=@Schema(implementation=ExceptionMessage.class)))})
 	@GetMapping("/{id}/synonyms")
-	public ResponseEntity<List<String>> bookTitleSynonyms(@Parameter(description="Product id") @PathVariable Long id) throws NoSuchElementException {
+	public ResponseEntity<List<String>> bookTitleSynonyms(@Parameter(description="Book id") @PathVariable Long id,
+														  @Parameter(description = "Maximum number of results, default 10") @RequestParam(name="limit", required=false) Integer limit) throws NoSuchElementException {
 		Optional<BookTO> optBook = bookService.findBook(id);
 		String name = optBook.orElseThrow().getName();
 		List<String> synonyms;
 		try {
-			synonyms = datamuseService.getSynonyms(name);
+			synonyms = limit == null ? datamuseService.getSynonyms(name) : datamuseService.getSynonyms(name, limit);
 		} catch (UnsupportedEncodingException e) {
 			throw new WordServiceException("Problem with synonyms", e);
 		}

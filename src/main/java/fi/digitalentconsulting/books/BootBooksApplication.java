@@ -26,10 +26,10 @@ public class BootBooksApplication {
 	@Bean
 	public ApplicationRunner initBooks(@Autowired BookService service) {
 		return args -> {
-			service.add(new BookTO("Book 1", "Author Arthur", EnumSet.of(Category.BIOGRAPHY), null));
-			service.add(new BookTO("Book 2", "Author Beate", EnumSet.of(Category.POETRY, Category.COMPUTERS), "0-201-10088-6"));
-			service.add(new BookTO("Book 3", "Author Clark", EnumSet.of(Category.BIOGRAPHY), null));
-			service.add(new BookTO("Book 4", "Author Delilah", EnumSet.of(Category.COMPUTERS), null));
+			service.add(new BookTO("Java", "Author Arthur", EnumSet.of(Category.BIOGRAPHY), null));
+			service.add(new BookTO("Spring", "Author Beate", EnumSet.of(Category.POETRY, Category.COMPUTERS), "0-201-10088-6"));
+			service.add(new BookTO("Boot camp", "Author Clark", EnumSet.of(Category.BIOGRAPHY), null));
+			service.add(new BookTO("Byte", "Author Delilah", EnumSet.of(Category.COMPUTERS), null));
 //			service.findBooks().forEach(System.out::println);
 			service.findBooks().forEach(b->LOGGER.info("Book: {}", b));
 		};
