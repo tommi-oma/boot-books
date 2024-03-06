@@ -1,7 +1,6 @@
 package fi.digitalentconsulting.books.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -13,7 +12,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -52,12 +50,16 @@ public class BookControllerTest {
     
     @Autowired
     DatamuseService datamuseService;
-	//private static final List<String> mockedSynonyms = Arrays.asList("ONE", "TWO");         
+
+	// If using the mock-version of datamuse service we would use this:
+	//private static final List<String> mockedSynonyms = Arrays.asList("ONE", "TWO");
+
 	@BeforeEach
 	public void setup() throws Exception {
 		// If not autoconfiguring and injecting mockMvc we can use:
 		//	    this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
         bookService.addAll(initialBooks);
+		// if we were to use a mock as dataMuseService
 //        Mockito.doReturn(mockedSynonyms)
 //        		.when(datamuseService).getSynonyms(anyString());
 	}
@@ -100,7 +102,7 @@ public class BookControllerTest {
 	
 	@Test
 	public void creatingProperBookSucceeds() throws Exception {
-		long expectedId = ((BookServiceMapImpl)bookService).nextId();// initialBooks.size()+1;
+		long expectedId = ((BookServiceMapImpl)bookService).nextId();// should equal: initialBooks.size()+1;
 		BookTO book = new BookTO("Test Title", "Test Author", EnumSet.of(Category.POETRY, Category.COMPUTERS), null);
 		MvcResult res = mockMvc.perform(post(BASE_URL)
 				.content(mapper.writeValueAsBytes(book))
@@ -137,7 +139,6 @@ public class BookControllerTest {
                 .andReturn();
         List<String> returned = mapper.readValue(res.getResponse().getContentAsString(),
         		new TypeReference<List<String>>() {});
-		//assertThat(returned.size()).isEqualTo(mockedSynonyms.size());
         assertThat(returned.size()).isEqualTo(mockedSynonyms.size());
 		returned.forEach(syn -> {
 			assertThat(syn).isIn(mockedSynonyms);
