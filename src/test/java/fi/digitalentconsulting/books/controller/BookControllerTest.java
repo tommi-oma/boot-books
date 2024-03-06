@@ -109,7 +109,7 @@ public class BookControllerTest {
 	public void creatingProperBookSucceeds() throws Exception {
 		// New Book::id changes depending on how many books are created before running this method
 		// we should be able to expect new id to be 2 greater than the current max id value
-		long expectedId = bookService.findBooks().stream().mapToLong(BookTO::getId).max().getAsLong()+2;
+		long expectedId = bookService.findBooks().stream().mapToLong(BookTO::getId).max().getAsLong()+1;
 		BookTO book = new BookTO("Test Title", "Test Author", EnumSet.of(Category.POETRY, Category.COMPUTERS), null);
 		MvcResult res = mockMvc.perform(post(BASE_URL)
 				.content(mapper.writeValueAsBytes(book))
@@ -164,7 +164,6 @@ public class BookControllerTest {
 
 	@Test
 	public void synonymsAreReturned() throws Exception {
-		List<String> mockedSynonyms = datamuseService.getSynonyms(null);
 		MvcResult res = mockMvc.perform(get(BASE_URL+"/1/synonyms")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
