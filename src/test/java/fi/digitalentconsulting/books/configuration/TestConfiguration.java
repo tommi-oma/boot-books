@@ -13,9 +13,7 @@ import fi.digitalentconsulting.books.service.BookServiceJPAImpl;
 import fi.digitalentconsulting.books.service.DatamuseService;
 
 @Profile("test")
-//@Configuration    // Since this is commented out, Spring ignores the @Bean annotated method, and we use the
-                    // TestDatamuseService that should now have a stereotype Service annotation
-                    // So this class is used only as example code
+@Configuration
 public class TestConfiguration {
     @Bean @Primary
     public DatamuseService dataMuseService() {

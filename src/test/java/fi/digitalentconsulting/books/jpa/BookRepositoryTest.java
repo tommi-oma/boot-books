@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.EnumSet;
 
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

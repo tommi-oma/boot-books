@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Profile("test")
-@Service 
+@Service // Not Primary
 public class TestDatamuseService extends DatamuseService {
 
 	private List<String> synonyms = Arrays.asList("Red", "Green", "Blue", "White");

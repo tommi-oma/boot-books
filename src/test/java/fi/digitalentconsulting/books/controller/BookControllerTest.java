@@ -25,7 +25,6 @@ import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.model.dto.Category;
 import fi.digitalentconsulting.books.service.BookService;
 import fi.digitalentconsulting.books.service.DatamuseService;
-import fi.digitalentconsulting.books.service.TestDatamuseService;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -154,7 +153,7 @@ public class BookControllerTest {
 
 	@Test
 	public void synonymsAreReturned() throws Exception {
-		List<String> mockedSynonyms = ((TestDatamuseService)datamuseService).getSynonyms(null);
+		List<String> mockedSynonyms = datamuseService.getSynonyms(null);
 		MvcResult res = mockMvc.perform(get(BASE_URL+"/1/synonyms")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
