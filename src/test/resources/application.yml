@@ -12,13 +12,18 @@ spring:
     password:  
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-<<<<<<< HEAD
     hibernate.ddl-auto: create-drop
+
+  logging:
+    level:
+      org:
+        hibernate:
+          SQL: debug
+          type:
+            descriptor:
+              sql: trace
 
 # Access H2 console at http://localhost:8080/h2-console
 #  h2:
 #    console:
 #        enabled: true
-=======
-    hibernate.ddl-auto: create-drop
->>>>>>> 8512adb (JPA lab)

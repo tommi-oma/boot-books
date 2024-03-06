@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import fi.digitalentconsulting.books.entity.Book;
 import fi.digitalentconsulting.books.model.dto.BookTO;
 import fi.digitalentconsulting.books.repository.BookRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 public class BookServiceJPAImpl implements BookService {
 
@@ -28,6 +29,7 @@ public class BookServiceJPAImpl implements BookService {
 				.collect(Collectors.toList());
 	}
 
+	@Transactional
 	@Override
 	public Optional<BookTO> findBook(Long id) {
 		Optional<Book> optbook = bookRepository.findById(id);
@@ -64,5 +66,4 @@ public class BookServiceJPAImpl implements BookService {
 			.map(BookTO::convertToBook)
 			.forEach(bookRepository::save);
 	}
-
 }
